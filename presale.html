@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/png" sizes="32x32" href="Logo200x200png.png">
-    <title>LION KING ($LKING) — Official Presale</title>
+    <title>Buy LION KING ($LKING) — Official Presale</title>
     <!-- Подключаем Ethers.js для работы с кошельками -->
     <script src="https://cloudflare.com"></script>
     <style>
@@ -234,7 +234,7 @@
     <nav>
         <div class="logo">
             <img src="Logo200x200png.png" alt="Logo" style="height: 35px; width: auto;">
-            <span>LKING PRESALE</span>
+            <span>LION KING $LKING PRESALE</span>
         </div>
         <button class="btn-connect" id="connect-btn">Connect Wallet</button>
     </nav>
@@ -244,20 +244,20 @@
         <div class="presale-card">
             <span class="network-badge">BNB Smart Chain (BSC) Only</span>
             <h1>Join the Presale</h1>
-            <p>Claim your allocation before the official PancakeSwap launch.</p>
+            <p>Claim your allocation before the official launch.</p>
 
             <!-- Блок Прогресс-бара -->
             <div class="progress-container">
                 <div class="progress-labels">
-                    <span id="raised-text">Raised: $0</span>
-                    <strong id="progress-percent">0%</strong>
+                    <span id="raised-text">Raised: $16450</span>
+                    <strong id="progress-percent">1%</strong>
                 </div>
                 <div class="progress-bar-bg">
                     <div class="progress-bar-fill" id="progress-fill"></div>
                 </div>
                 <div class="progress-labels" style="margin-top: 6px; font-size: 11px;">
-                    <span>Soft Cap: $10,000</span>
-                    <span id="target-text">Hard Cap: $50,000</span>
+                    <span>Soft Cap: $1M</span>
+                    <span id="target-text">Hard Cap: $4M</span>
                 </div>
             </div>
 
@@ -278,26 +278,33 @@
                 <input type="number" class="amount-input" id="amount-input" placeholder="0.0" step="any" min="0">
             </div>
 
-            <!-- Расчет получаемых токенов -->
+                        <!-- Расчет получаемых токенов -->
             <div class="result-box">
                 <span>You will get:</span>
                 <strong id="tokens-output">0.0 $LKING</strong>
             </div>
 
-            <!-- Кнопка действия -->
-            <button class="btn-buy-now" id="buy-btn" disabled>Connect Wallet First</button>
+            <!-- Две кнопки: Покупка и Получение -->
+            <div style="display: flex; flex-direction: column; gap: 12px;">
+                <button class="btn-buy-now" id="buy-btn" disabled>Connect Wallet First</button>
+                <button class="btn-buy-now" id="claim-btn" disabled style="background: transparent; border: 2px solid var(--gold); color: var(--gold);">Claim / Receive $LKING</button>
+            </div>
+            
             <div class="status-msg" id="status-text"></div>
+          
         </div>
     </div>
 
     <!-- Web3 Скрипт логики покупок -->
     <script>
-        // --- КОНФИГУРАЦИЯ ПРОЕКТА (Укажите ваши данные) ---
-        const MY_WALLET_ADDRESS = "0x0000000000000000000000000000000000000000"; // <--- ВАШ КОШЕЛЕК
-        const TOKEN_PRICE_USD = 0.01; // Цена $LKING в долларах
+                // --- КОНФИГУРАЦИЯ ПРОЕКТА ---
+        const MY_WALLET_ADDRESS = "0xe27BBB352B87299a0367dE5D2Fa6A8dD265c8312"; // Ваш кошелек для сбора средств
+        const LKING_TOKEN_ADDRESS = "0x15414caF78e82Ce6DCBb46a32b1CE0FE56A3FF01"; // <--- АДРЕС ВАШЕГО СОЗДАННОГО ТОКЕНА $LKING
+        const TOKEN_PRICE_USD = 0.003; // Цена $LKING в долларах
+
         
         // Данные для прогресс-бара
-        const HARD_CAP_USD = 50000;  // Максимальная цель сборов
+        const HARD_CAP_USD = 4000000;  // Максимальная цель сборов
         let currentRaisedUsd = 16450; // Сколько собрано на текущий момент (можно менять)
 
         // Адреса токенов в сети BSC Mainnet
@@ -366,7 +373,14 @@
                  signer = await provider.getSigner();
                  userAddress = await signer.getAddress();
                  connectBtn.innerText = userAddress.substring(0, 6) + "..." + userAddress.substring(38);
-                 buyBtn.disabled = false;buyBtn.innerText = "Buy $LKING Now";
+                 buyBtn.disabled = false;
+
+                 
+        claimBtn.disabled = false;
+        claimBtn.innerText = "Claim $LKING";
+        claimBtn.addEventListener('click', handleClaim);
+                 
+                 buyBtn.innerText = "Buy $LKING Now";
                  updateStatus("Wallet connected successfully!", "green");
                 } 
             catch (err) {
@@ -434,4 +448,50 @@
         buyBtn.addEventListener('click', handlePurchase);
         amountInput.addEventListener('input', calculateTokens);
         currencySelect.addEventListener('change', calculateTokens);
+
+                const claimBtn = document.getElementById('claim-btn');
+
+        // Активация кнопки Claim при подключении кошелька (добавьте это внутрь функции connectWallet после активации buyBtn)
+        // claimBtn.disabled = false; claimBtn.innerText = "Claim $LKING";
+
+        async function handleClaim() {
+            buyBtn.disabled = true;
+            claimBtn.disabled = true;
+            updateStatus("Checking your allocation for Claim...", "orange");
+
+            try {
+                // Если пресейл работает через смарт-контракт распределения:
+                // Здесь вызывается метод контракта пресейла, например: contract.claimTokens();
+                
+                // Для прямого Web3-взаимодействия (добавление токена в MetaMask пользователя, чтобы он его увидел):
+                await window.ethereum.request({
+                    method: 'wallet_watchAsset',
+                    params: {
+                        type: 'ERC20',
+                        options: {
+                            address: LKING_TOKEN_ADDRESS, 
+                            symbol: 'LKING', 
+                            decimals: 18, 
+                            image: 'https://your-domain.com', // Прямая ссылка на логотип в сети
+                        },
+                    },
+                });
+
+                updateStatus("Tokens successfully added to your wallet! Check your balance. 🎉", "green");
+            } catch (err) {
+                console.error(err);
+                updateStatus("Claim process failed or rejected.", "red");
+            } finally {
+                buyBtn.disabled = false;
+                claimBtn.disabled = false;
+            }
+        }
+
+        // Не забудьте обновить функцию connectWallet(), добавив туда:
+        // claimBtn.disabled = false;
+        // claimBtn.innerText = "Claim $LKING";
+
+        claimBtn.addEventListener('click', handleClaim);
+
     
+</script>
