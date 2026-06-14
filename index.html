@@ -33,7 +33,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 20px 5%;
+            padding: 10px 5%;
             background: rgba(13, 13, 13, 0.8);
             backdrop-filter: blur(10px);
             position: fixed;
@@ -43,8 +43,22 @@
             border-bottom: 1px solid rgba(255, 189, 89, 0.1);
         }
 
-        .logo {
-            font-size: 24px;
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo-img {
+            width: 45px;
+            height: 45px;
+            object-fit: contain;
+            border-radius: 50%;
+            border: 1px solid var(--gold);
+        }
+
+        .logo-text {
+            font-size: 22px;
             font-weight: bold;
             color: var(--gold);
             text-transform: uppercase;
@@ -94,6 +108,17 @@
             padding: 0 20px;
             background: radial-gradient(circle at center, #261c08 0%, var(--bg-dark) 70%);
             margin-top: 60px;
+        }
+
+        /* Hero Banner Integration */
+        .hero-banner {
+            width: 100%;
+            max-width: 800px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(255, 189, 89, 0.15);
+            border: 1px solid rgba(255, 189, 89, 0.2);
+            margin-bottom: 40px;
+            object-fit: cover;
         }
 
         .hero-badge {
@@ -311,7 +336,10 @@
 
     <!-- Navigation -->
     <nav>
-        <div class="logo">🦁 Lion King</div>
+        <div class="logo-container">
+            <img src="Logo200x200png.png" alt="Lion King Logo" class="logo-img">
+            <span class="logo-text">Lion King</span>
+        </div>
         <ul class="nav-links">
             <li><a href="#about">About</a></li>
             <li><a href="#tokenomics">Tokenomics</a></li>
@@ -322,23 +350,12 @@
 
     <!-- Hero Section -->
     <header class="hero">
+        <div style="height: 60px;"></div> <!-- Отступ под меню -->
+        
+        <!-- Integrated Banner Graphic -->
+        <img src="baner2.jpg" alt="Lion King Banner" class="hero-banner">
+
         <div class="hero-badge">THE KING OF THE CRYPTO JUNGLE</div>
         <h1>LION KING</h1>
         <p>Forget the dogs, frogs, and cats. The true ruler of the meme savannah has arrived. Welcome to the kingdom of $LKING.</p>
         
-        <!-- Contract Address Box -->
-        <div class="ca-container">
-            <span class="network-badge">BSC NETWORK</span>
-            <span class="ca-text" id="caToken">0x15414caF78e82Ce6DCBb46a32b1CE0FE56A3FF01</span>
-            <button class="btn-copy" onclick="copyCA()">Copy CA</button>
-        </div>
-
-        <div style="display: flex; gap: 20px; flex-wrap: wrap; justify-content: center;">
-            <a href="https://pancakeswap.finance" target="_blank" class="btn-buy" style="padding: 15px 40px; font-size: 18px;">Buy on PancakeSwap</a>
-            <a href="https://x.com" target="_blank" class="btn-buy" style="padding: 15px 40px; font-size: 18px; background: transparent; border: 2px solid var(--gold); color: var(--gold);">Join Twitter / X</a>
-        </div>
-    </header>
-
-    <!-- About Section -->
-    <section class="section" id="about">
-        <h2 class="section-title">The Legend</h2>
