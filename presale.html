@@ -1,1 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" sizes="32x32" href="Logo200x200png.png">
+    <title>LION KING ($LKING) — Official Presale</title>
+    <!-- Подключаем Ethers.js для работы с кошельками -->
+    <script src="https://cloudflare.com"></script>
+    <style>
+        :root {
+            --gold: #ffbd59;
+            --dark-gold: #b37d14;
+            --bg-dark: #0d0d0d;
+            --card-bg: #1a1a1a;
+            --text-light: #ffffff;
+            --text-gray: #a6a6a6;
+        }
 
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-light);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background: radial-gradient(circle at center, #261c08 0%, var(--bg-dark) 80%);
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 5%;
+            background: rgba(13, 13, 13, 0.8);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 189, 89, 0.1);
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--gold);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-connect {
+            background: linear-gradient(45deg, var(--gold), var(--dark-gold));
+            color: #000;
+            padding: 10px 25px;
+            border-radius: 50px;
+            font-weight: bold;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-connect:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 189, 89, 0.4);
+        }
+
+        .presale-container {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 40px 20px;
+        }
+
+        .presale-card {
+            background: var(--card-bg);
+            border: 1px solid rgba(255, 189, 89, 0.2);
+            border-radius: 24px;
+            padding: 40px;
+            max-width: 480px;
+            width: 100%;
+            text-align: center;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+        }
+
+        .presale-card h1 {
+            font-size: 28px;
+            color: var(--gold);
+            margin-bottom: 10px;
+            text-transform: uppercase;
+        }
+
+        .presale-card p {
+            color: var(--text-gray);
+            font-size: 15px;
+            margin-bottom: 25px;
+        }
+
+        .network-badge {
+            background: rgba(255, 189, 89, 0.1);
+            border: 1px solid var(--gold);
+            color: var(--gold);
+            padding: 6px 15px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            display: inline-block;
+            margin-bottom: 20px;
+        }
+
+        /* Стиль Прогресс-бара */
+        .progress-container {
+            margin-bottom: 30px;
+            text-align: left;
+        }
+
+        .progress-labels {
+            display: flex;
+            justify-content: space-between;
+            font-size: 13px;
+            color: var(--text-gray);
+            margin-bottom: 8px;
+        }
+
+        .progress-labels strong {
+            color: var(--gold);
+        }
+
+        .progress-bar-bg {
+            background: #0d0d0d;
+            height: 14px;
+            border-radius: 10px;
+            width: 100%;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            position: relative;
+        }
+
+        .progress-bar-fill {
+            background: linear-gradient(90deg, var(--dark-gold), var(--gold));
+            height: 100%;
+            width: 0%; /* Анимируется скриптом */
+            border-radius: 10px;
+            transition: width 1.5s cubic-bezier(0.1, 0.8, 0.2, 1);
+            box-shadow: 0 0 10px rgba(255, 189, 89, 0.5);
+        }
+
+        .input-group {
+            text-align: left;
+            margin-bottom: 20px;
+        }
+
+        .input-group label {
+            display: block;
+            font-size: 13px;
+            color: var(--text-gray);
+            margin-bottom: 8px;
+            text-transform: uppercase;
+        }
+
+        .currency-select, .amount-input {
+            width: 100%;
+            background: #0d0d0d;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #fff;
+            padding: 14px;
+            border-radius: 12px;
+            font-size: 16px;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        .currency-select:focus, .amount-input:focus {
+            border-color: var(--gold);
+        }
+
+        .result-box {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 14px;
+        }
+
+        .result-box span {
+            color: var(--text-gray);
+        }
+
+        .result-box strong {
+            color: var(--gold);
+            font-size: 18px;
+        }
+
+        .btn-buy-now {
+            width: 100%;
+            background: linear-gradient(45deg, var(--gold), var(--dark-gold));
+            color: #000;
+            padding: 15px;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-buy-now:disabled {
+            background: #333;
+            color: #777;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .status-msg {
+            margin-top: 15px;
+            font-size: 13px;
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Навигация -->
+    <nav>
+        <div class="logo">
+            <img src="Logo200x200png.png" alt="Logo" style="height: 35px; width: auto;">
+            <span>LKING PRESALE</span>
+        </div>
+        <button class="btn-connect" id="connect-btn">Connect Wallet</button>
+    </nav>
+
+    <!-- Форма пресейла -->
+    <div class="presale-container">
+        <div class="presale-card">
+            <span class="network-badge">BNB Smart Chain (BSC) Only</span>
+            <h1>Join the Presale</h1>
+            <p>Claim your allocation before the official PancakeSwap launch.</p>
+
+            <!-- Блок Прогресс-бара -->
+            <div class="progress-container">
+                <div class="progress-labels">
+                    <span id="raised-text">Raised: $0</span>
+                    <strong id="progress-percent">0%</strong>
+                </div>
+                <div class="progress-bar-bg">
+                    <div class="progress-bar-fill" id="progress-fill"></div>
+                </div>
+                <div class="progress-labels" style="margin-top: 6px; font-size: 11px;">
+                    <span>Soft Cap: $10,000</span>
+                    <span id="target-text">Hard Cap: $50,000</span>
+                </div>
+            </div>
+
+            <!-- Выбор валюты -->
+            <div class="input-group">
+                <label>Select Payment Method</label>
+                <select class="currency-select" id="currency-select">
+                    <option value="BNB">BNB (Native Coin)</option>
+                    <option value="USDT">USDT (Stablecoin)</option>
+                    <option value="USDC">USDC (Stablecoin)</option>
+                    <option value="FDUSD">FDUSD (Stablecoin)</option>
+                </select>
+            </div>
+
+            <!-- Ввод суммы -->
+            <div class="input-group">
+                <label>Amount to Spend</label>
+                <input type="number" class="amount-input" id="amount-input" placeholder="0.0" step="any" min="0">
+            </div>
+
+            <!-- Расчет получаемых токенов -->
+            <div class="result-box">
+                <span>You will get:</span>
+                <strong id="tokens-output">0.0 $LKING</strong>
+            </div>
+
+            <!-- Кнопка действия -->
+            <button class="btn-buy-now" id="buy-btn" disabled>Connect Wallet First</button>
+            <div class="status-msg" id="status-text"></div>
+        </div>
+    </div>
+
+    <!-- Web3 Скрипт логики покупок -->
+    <script>
+        // --- КОНФИГУРАЦИЯ ПРОЕКТА (Укажите ваши данные) ---
+        const MY_WALLET_ADDRESS = "0x0000000000000000000000000000000000000000"; // <--- ВАШ КОШЕЛЕК
+        const TOKEN_PRICE_USD = 0.01; // Цена $LKING в долларах
+        
+        // Данные для прогресс-бара
+        const HARD_CAP_USD = 50000;  // Максимальная цель сборов
+        let currentRaisedUsd = 16450; // Сколько собрано на текущий момент (можно менять)
+
+        // Адреса токенов в сети BSC Mainnet
+        const TOKEN_ADDRESSES = {
+            USDT: "0x55d398326f99059fF775485246999027B3197955",
+            USDC: "0x8AC76a51cc950d9822D68b83fE1Ad97B32CD580d",
+            FDUSD: "0xc5f0f7b66764F6ec8C8Dff7BA68498885979679A"
+        };
+
+        const ERC20_ABI = ["function transfer(address to, uint256 value) public returns (bool)"];
+
+        let provider, signer, userAddress;
+        let bnbPriceUsd = 600; // Автоматически обновится из API
+
+        const connectBtn = document.getElementById('connect-btn');
+        const buyBtn = document.getElementById('buy-btn');
+        const currencySelect = document.getElementById('currency-select');
+        const amountInput = document.getElementById('amount-input');
+        const tokensOutput = document.getElementById('tokens-output');
+        const statusText = document.getElementById('status-text');
+
+       // Инициализация прогресс-бара
+        function updateProgressBar() {const percentage = Math.min((currentRaisedUsd / HARD_CAP_USD) * 100, 100);document.getElementById('raised-text').innerText = Raised: $${currentRaisedUsd.toLocaleString()};document.getElementById('target-text').innerText = Hard Cap: $${HARD_CAP_USD.toLocaleString()};document.getElementById('progress-percent').innerText = ${percentage.toFixed(1)}%;// Запуск плавной анимации полосы с задержкой, чтобы пользователь увидел эффектsetTimeout(() => {document.getElementById('progress-fill').style.width = ${percentage}%;}, 300);}updateProgressBar();// Получаем актуальный курс BNB к USDasync function fetchBnbPrice() {try {const response = await fetch('coingecko.com');const data = await response.json();bnbPriceUsd = data.binancecoin.usd;} catch (err) {console.log("Could not fetch BNB price, using default", err);}}fetchBnbPrice();// Подключение кошелькаasync function connectWallet() {if (!window.ethereum) {updateStatus("Please install MetaMask or Trust Wallet!", "red");return;}try {provider = new ethers.BrowserProvider(window.ethereum);const network = await provider.getNetwork();if (Number(network.chainId) !== 56) {try {await window.ethereum.request({method: 'wallet_switchEthereumChain',params: [{ chainId: '0x38' }],});} catch (switchError) {updateStatus("Please switch your wallet to BSC Mainnet!", "red");return;}}await provider.send("eth_requestAccounts", []);signer = await provider.getSigner();userAddress = await signer.getAddress();connectBtn.innerText = userAddress.substring(0, 6) + "..." + userAddress.substring(38);buyBtn.disabled = false;buyBtn.innerText = "Buy $LKING Now";updateStatus("Wallet connected successfully!", "green");} catch (err) {console.error(err);updateStatus("Connection failed.", "red");}}// Расчет количества получаемых монетfunction calculateTokens() {const amount = parseFloat(amountInput.value) || 0;const currency = currencySelect.value;let totalValueInUsd = 0;if (currency === "BNB") {totalValueInUsd = amount * bnbPriceUsd;} else {totalValueInUsd = amount;}const tokensToReceive = totalValueInUsd / TOKEN_PRICE_USD;tokensOutput.innerText = tokensToReceive.toLocaleString(undefined, {maximumFractionDigits: 2}) + " $LKING";}// Логика транзакции покупкиasync function handlePurchase() {const amount = amountInput.value;if (!amount || amount <= 0) {updateStatus("Please enter a valid amount.", "red");return;}const currency = currencySelect.value;buyBtn.disabled = true;buyBtn.innerText = "Processing...";updateStatus("Please confirm the transaction in your wallet...", "orange");try {if (currency === "BNB") {const tx = await signer.sendTransaction({to: MY_WALLET_ADDRESS,value: ethers.parseEther(amount)});updateStatus("Transaction sent! Waiting for block confirmation...", "orange");await tx.wait();} else {const tokenAddress = TOKEN_ADDRESSES[currency];const tokenContract = new ethers.Contract(tokenAddress, ERC20_ABI, signer);const parsedAmount = ethers.parseUnits(amount, 18);const tx = await tokenContract.transfer(MY_WALLET_ADDRESS, parsedAmount);updateStatus("Transaction sent! Waiting for block confirmation...", "orange");await tx.wait();}updateStatus("Success! Your tokens will be airdropped soon. 🎉", "green");amountInput.value = "";calculateTokens();} catch (err) {console.error(err);updateStatus("Transaction failed or rejected.", "red");} finally {buyBtn.disabled = false;buyBtn.innerText = "Buy $LKING Now";}}function updateStatus(text, colorHex) {statusText.innerText = text;statusText.style.color = colorHex === "green" ? "#2ecc71" : colorHex === "red" ? "#e74c3c" : colorHex === "orange" ? "#f39c12" : "#a6a6a6";}connectBtn.addEventListener('click', connectWallet);buyBtn.addEventListener('click', handlePurchase);amountInput.addEventListener('input', calculateTokens);currencySelect.addEventListener('change', calculateTokens);
