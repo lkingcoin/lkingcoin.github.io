@@ -1,10 +1,10 @@
 // --- НАСТРОЙКИ ПРОЕКТА (Укажите ваши реальные данные) ---
-const MY_WALLET_ADDRESS = "0xe27BBB352B87299a0367dE5D2Fa6A8dD265c8312"; // <--- ВАШ КОШЕЛЕК ДЛЯ ПРИЕМА СРЕДСТВ
-const LKING_TOKEN_ADDRESS = "0x15414caF78e82Ce6DCBb46a32b1CE0FE56A3FF01"; // <--- АДРЕС ТОКЕНА $LKING
-const TOKEN_PRICE_USD = 0.003; // Цена вашего токена в долларах
+const MY_WALLET_ADDRESS = "0xe27BBB352B87299a0367dE5D2Fa6A8dD265c8312"; // Ваш кошелек для приема средств
+const LKING_TOKEN_ADDRESS = "0x15414caF78e82Ce6DCBb46a32b1CE0FE56A3FF01"; // Адрес вашего токена $LKING
+const TOKEN_PRICE_USD = 0.003; // Цена токена в долларах
 
 const HARD_CAP_USD = 1000000;  
-let currentRaisedUsd = 16450; // Стартовое значение для прогресс-бара
+let currentRaisedUsd = 16450; 
 
 // Официальные смарт-контракты стейблкоинов в сети BSC Mainnet
 const TOKEN_ADDRESSES = {
@@ -14,7 +14,25 @@ const TOKEN_ADDRESSES = {
 };
 
 let userAddress = null;
+let provider = null;
 let bnbPriceUsd = 600; 
+
+// Динамическое подключение скрипта выбора кошельков (Web3Modal) в обход блокировок GitHub
+function loadWeb3Modal() {
+    return new Promise((resolve) => {
+        if (window.Web3Modal) return resolve();
+        const script = document.createElement('script');
+        script.src = "https://unpkg.com";
+        script.onload = () => {
+            // Дополнительно подгружаем WalletConnect для мобильных (QR-код)
+            const wcScript = document.createElement('script');
+            wcScript.src = "https://unpkg.com";
+            wcScript.onload = () => resolve();
+            document.head.appendChild(wcScript);
+        };
+        document.head.appendChild(script);
+    });
+}
 
 // Захват элементов DOM
 const connectBtn = document.getElementById('connect-btn');
@@ -38,7 +56,7 @@ function updateProgressBar() {
 }
 updateProgressBar();
 
-// Парсинг цены BNB к доллару онлайн
+// Парсинг цены BNB онлайн
 async function fetchBnbPrice() {
     try {
         const response = await fetch('https://coingecko.com');
@@ -48,48 +66,69 @@ async function fetchBnbPrice() {
 }
 fetchBnbPrice();
 
-// Прямое подключение кошельков через RPC API браузера
-async function connectWallet() {
-    if (!window.ethereum) {
-        updateStatus("No crypto wallet extension found! Please open inside Trust Wallet or use MetaMask.", "red");
-        return;
-    }
+// Инициализация меню выбора кошельков
+let web3Modal;
+async function initWeb3Modal() {
+    await loadWeb3Modal();
+    
+    const providerOptions = {
+        walletconnect: {
+            package: window.WalletConnectProvider,
+            options: {
+                rpc: {
+                    56: "https://binance.org" // BSC RPC
+                },
+                network: "binance"
+            }
+        }
+    };
 
+    web3Modal = new window.Web3Modal.default({
+        cacheProvider: false, 
+        providerOptions,
+        theme: "dark"
+    });
+}
+initWeb3Modal();
+
+// Клик по кнопке запускает Окно Выбора
+async function connectWallet() {
+    if (!web3Modal) await initWeb3Modal();
+    
     try {
-        const chainIdHex = await window.ethereum.request({ method: 'eth_chainId' });
+        updateStatus("Opening wallet selection...", "orange");
+        provider = await web3Modal.connect();
+        
+        // Запрос ID сети напрямую
+        const chainIdHex = await provider.request({ method: 'eth_chainId' });
         const chainId = parseInt(chainIdHex, 16);
         
         if (chainId !== 56) {
             try {
-                await window.ethereum.request({
+                await provider.request({
                     method: 'wallet_switchEthereumChain',
                     params: [{ chainId: '0x38' }], 
                 });
-                window.location.reload();
-                return;
             } catch (switchError) {
                 if (switchError.code === 4902) {
-                    try {
-                        await window.ethereum.request({
-                            method: 'wallet_addEthereumChain',
-                            params: [{
-                                chainId: '0x38',
-                                chainName: 'BNB Smart Chain Mainnet',
-                                nativeCurrency: { name: 'BNB', symbol: 'BNB', decimals: 18 },
-                                rpcUrls: ['https://binance.org'],
-                                blockExplorerUrls: ['https://bscscan.com']
-                            }],
-                        });
-                        window.location.reload();
-                        return;
-                    } catch (addError) { return; }
+                    await provider.request({
+                        method: 'wallet_addEthereumChain',
+                        params: [{
+                            chainId: '0x38',
+                            chainName: 'BNB Smart Chain Mainnet',
+                            nativeCurrency: { name: 'BNB', symbol: 'BNB', decimals: 18 },
+                            rpcUrls: ['https://binance.org'],
+                            blockExplorerUrls: ['https://bscscan.com']
+                        }],
+                    });
+                } else {
+                    updateStatus("Please switch network to BSC Mainnet.", "red");
+                    return;
                 }
-                updateStatus("Please switch network to BSC Mainnet.", "red");
-                return;
             }
         }
 
-        const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+        const accounts = await provider.request({ method: 'eth_accounts' });
         userAddress = accounts[0];
 
         connectBtn.innerText = userAddress.substring(0, 6) + "..." + userAddress.substring(38);
@@ -100,9 +139,14 @@ async function connectWallet() {
             claimBtn.innerText = "Claim $LKING";
         }
         updateStatus("Wallet connected successfully!", "green");
+
+        // Слушатели событий внутри выбранного кошелька
+        provider.on("accountsChanged", (accounts) => { window.location.reload(); });
+        provider.on("chainChanged", (chainId) => { window.location.reload(); });
+
     } catch (err) {
         console.error(err);
-        updateStatus("Connection failed or rejected.", "red");
+        updateStatus("Connection cancelled or failed.", "red");
     }
 }
 
@@ -117,10 +161,10 @@ function calculateTokens() {
     tokensOutput.innerText = tokensToReceive.toLocaleString(undefined, {maximumFractionDigits: 2}) + " $LKING";
 }
 
-// Сборка транзакций в обход тяжелых библиотек
+// Обработка покупки через выбранный кошелек
 async function handlePurchase() {
     const amount = amountInput.value;
-    if (!amount || amount <= 0 || !userAddress) {
+    if (!amount || amount <= 0 || !userAddress || !provider) {
         updateStatus("Please enter a valid amount.", "red");
         return;
     }
@@ -129,23 +173,23 @@ async function handlePurchase() {
     buyBtn.disabled = true;
     if (claimBtn) claimBtn.disabled = true;
     buyBtn.innerText = "Processing...";
-    updateStatus("Please confirm transaction in your wallet...", "orange");
+    updateStatus("Please confirm transaction in your wallet app...", "orange");
 
     try {
         if (currency === "BNB") {
             const hexValue = "0x" + BigInt(Math.floor(parseFloat(amount) * 1e18)).toString(16);
             const txParams = { from: userAddress, to: MY_WALLET_ADDRESS, value: hexValue };
-            await window.ethereum.request({ method: 'eth_sendTransaction', params: [txParams] });
+            await provider.request({ method: 'eth_sendTransaction', params: [txParams] });
         } else {
             const tokenAddress = TOKEN_ADDRESSES[currency];
-            const methodId = "0xa9059cbb"; // хэш метода transfer
+            const methodId = "0xa9059cbb"; 
             const paddedAddress = MY_WALLET_ADDRESS.substring(2).toLowerCase().padStart(64, '0');
             const tokensInWei = BigInt(Math.floor(parseFloat(amount) * 1e18));
             const paddedAmount = tokensInWei.toString(16).padStart(64, '0');
             const txData = methodId + paddedAddress + paddedAmount;
 
             const txParams = { from: userAddress, to: tokenAddress, data: txData, value: "0x0" };
-            await window.ethereum.request({ method: 'eth_sendTransaction', params: [txParams] });
+            await provider.request({ method: 'eth_sendTransaction', params: [txParams] });
         }
 
         updateStatus("Success! Transaction sent to blockchain. 🎉", "green");
@@ -164,15 +208,15 @@ async function handlePurchase() {
     }
 }
 
-// Запуск импорта токена в ассеты
+// Функция Claim 
 async function handleClaim() {
-    if (!userAddress) return;
+    if (!userAddress || !provider) return;
     buyBtn.disabled = true;
     claimBtn.disabled = true;
     updateStatus("Adding $LKING to your asset list...", "orange");
 
     try {
-        await window.ethereum.request({
+        await provider.request({
             method: 'wallet_watchAsset',
             params: {
                 type: 'ERC20',
@@ -197,18 +241,6 @@ async function handleClaim() {
 function updateStatus(text, colorHex) {
     statusText.innerText = text;
     statusText.style.color = colorHex === "green" ? "#2ecc71" : colorHex === "red" ? "#e74c3c" : colorHex === "orange" ? "#f39c12" : "#a6a6a6";
-}
-
-// Автоматические слушатели изменений в самом расширении
-if (window.ethereum) {
-    window.ethereum.on('accountsChanged', (accounts) => { 
-        if(accounts.length === 0) window.location.reload();
-        else {
-            userAddress = accounts[0];
-            connectBtn.innerText = userAddress.substring(0, 6) + "..." + userAddress.substring(38);
-        }
-    });
-    window.ethereum.on('chainChanged', () => { window.location.reload(); });
 }
 
 connectBtn.addEventListener('click', connectWallet);
