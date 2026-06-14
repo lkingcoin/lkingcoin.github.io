@@ -11,6 +11,16 @@
     <script src="https://unpkg.com"></script>
 </head>
 <body>
+import { createThirdwebClient } from "thirdweb";
+import { ConnectEmbed } from "thirdweb/react";
+
+const thirdwebClient = createThirdwebClient({
+  clientId: "<YOUR_CLIENT_ID>",
+});
+
+function App() {
+  return <ConnectEmbed client={thirdwebClient} />;
+}
 
     <!-- Навигация -->
     <nav>
