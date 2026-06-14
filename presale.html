@@ -295,15 +295,15 @@
         </div>
     </div>
 
-      <!-- Web3 Скрипт логики покупок и клейма -->
+            <!-- Чистый автономный Web3 скрипт без WalletConnect -->
     <script>
         // --- КОНФИГУРАЦИЯ ПРОЕКТА (Укажите ваши данные) ---
         const MY_WALLET_ADDRESS = "0xe27BBB352B87299a0367dE5D2Fa6A8dD265c8312"; // Ваш кошелек для сбора средств
         const LKING_TOKEN_ADDRESS = "0x15414caF78e82Ce6DCBb46a32b1CE0FE56A3FF01"; // Адрес вашего токена $LKING
-        const TOKEN_PRICE_USD = 0.003; // Цена $LKING в долларах
+        const TOKEN_PRICE_USD = 0.01; // Цена $LKING в долларах
         
         // Данные для прогресс-бара
-        const HARD_CAP_USD = 4000000;  
+        const HARD_CAP_USD = 50000;  
         let currentRaisedUsd = 16450; 
 
         // Адреса токенов в сети BSC Mainnet
@@ -351,33 +351,59 @@
         }
         fetchBnbPrice();
 
-        // Подключение кошелька
+        // Подключение ЛЮБОГО установленного браузерного кошелька
         async function connectWallet() {
-            if (!window.ethereum) {
-                updateStatus("Please install MetaMask or Trust Wallet!", "red");
+            // Ищем любой доступный Web3 провайдер в браузере (MetaMask, Trust Wallet, OKX и т.д.)
+            const activeProvider = window.ethereum;
+
+            if (!activeProvider) {
+                updateStatus("No crypto wallet found! Please install MetaMask or Trust Wallet extension.", "red");
                 return;
             }
+
             try {
-                provider = new ethers.BrowserProvider(window.ethereum);
-                const network = await provider.getNetwork();
+                provider = new ethers.BrowserProvider(activeProvider);
                 
+                // Проверяем сеть кошелька (ID 56 — это BSC Mainnet)
+                const network = await provider.getNetwork();
                 if (Number(network.chainId) !== 56) {
                     try {
-                        await window.ethereum.request({
+                        // Запрашиваем автоматическое переключение на сеть BSC
+                        await activeProvider.request({
                             method: 'wallet_switchEthereumChain',
-                            params: [{ chainId: '0x38' }], // Переключение на BSC (56)
+                            params: [{ chainId: '0x38' }], // 56 в 16-ричной системе
                         });
                     } catch (switchError) {
-                        updateStatus("Please switch your wallet to BSC Mainnet!", "red");
-                        return;
+                        // Если сети BSC нет в кошельке, предлагаем её добавить
+                        if (switchError.code === 4902) {
+                            try {
+                                await activeProvider.request({
+                                    method: 'wallet_addEthereumChain',
+                                    params: [{
+                                        chainId: '0x38',
+                                        chainName: 'BNB Smart Chain Mainnet',
+                                        nativeCurrency: { name: 'BNB', symbol: 'BNB', decimals: 18 },
+                                        rpcUrls: ['https://binance.org'],
+                                        blockExplorerUrls: ['https://bscscan.com']
+                                    }],
+                                });
+                            } catch (addError) {
+                                updateStatus("Failed to add BNB Chain to your wallet.", "red");
+                                return;
+                            }
+                        } else {
+                            updateStatus("Please switch your wallet to BSC Mainnet!", "red");
+                            return;
+                        }
                     }
                 }
 
+                // Запрашиваем авторизацию аккаунта
                 await provider.send("eth_requestAccounts", []);
                 signer = await provider.getSigner();
                 userAddress = await signer.getAddress();
 
-                // Успешная активация интерфейса
+                // Активируем элементы интерфейса сайта
                 connectBtn.innerText = userAddress.substring(0, 6) + "..." + userAddress.substring(38);
                 buyBtn.disabled = false;
                 buyBtn.innerText = "Buy $LKING Now";
@@ -390,7 +416,7 @@
                 updateStatus("Wallet connected successfully!", "green");
             } catch (err) {
                 console.error(err);
-                updateStatus("Connection failed.", "red");
+                updateStatus("Connection failed or rejected.", "red");
             }
         }
 
@@ -458,7 +484,7 @@
             }
         }
 
-        // Автоматический импорт токена в MetaMask пользователя
+        // Автоматический импорт вашего токена в кошелек инвестора
         async function handleClaim() {
             if (!userAddress) return;
             buyBtn.disabled = true;
@@ -493,10 +519,11 @@
             statusText.style.color = colorHex === "green" ? "#2ecc71" : colorHex === "red" ? "#e74c3c" : colorHex === "orange" ? "#f39c12" : "#a6a6a6";
         }
 
-        connectBtn.addEventListener('click', connectWallet);
         buyBtn.addEventListener('click', handlePurchase);
         if (claimBtn) claimBtn.addEventListener('click', handleClaim);
         amountInput.addEventListener('input', calculateTokens);
         currencySelect.addEventListener('change', calculateTokens);
     </script>
+</body>
+</html>
 
