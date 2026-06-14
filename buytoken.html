@@ -3,8 +3,110 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Buy $LKING — The True King of Crypto Jungle</title>
+    
+        <!-- Логотип для вкладки браузера (Favicon) -->
+    <link rel="icon" type="image/png" sizes="32x32" href="Logo200x200png.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="Logo200x200png.png">
+    <link rel="apple-touch-icon" href="Logo200x200png.png">
+
+    <title>Buy LION KING ($LKING)</title>
+    
     <style>
+                /* Advanced Footer Styles */
+        footer {
+            background: #050505;
+            padding: 60px 5% 30px;
+            border-top: 1px solid rgba(255, 189, 89, 0.1);
+            color: var(--text-gray);
+            font-size: 14px;
+        }
+
+        .footer-container {
+            display: grid;
+            grid-template-columns: 2fr repeat(2, 1fr);
+            gap: 40px;
+            max-width: 1200px;
+            margin: 0 auto 40px;
+            text-align: left;
+        }
+
+        .footer-brand h4 {
+            font-size: 20px;
+            color: var(--gold);
+            text-transform: uppercase;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .footer-brand p {
+            line-height: 1.6;
+            font-size: 14px;
+        }
+
+        .footer-links-col h4 {
+            color: var(--text-light);
+            font-size: 16px;
+            text-transform: uppercase;
+            margin-bottom: 15px;
+            letter-spacing: 1px;
+        }
+
+        .footer-links-col ul {
+            list-style: none;
+        }
+
+        .footer-links-col li {
+            margin-bottom: 10px;
+        }
+
+        .footer-links-col a {
+            color: var(--text-gray);
+            text-decoration: none;
+            transition: color 0.3s;
+            display: inline-block;
+        }
+
+        .footer-links-col a:hover {
+            color: var(--gold);
+            transform: translateX(3px);
+        }
+
+        .footer-bottom {
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            padding-top: 30px;
+            text-align: center;
+        }
+
+        .disclaimer {
+            font-size: 11px;
+            max-width: 900px;
+            margin: 0 auto 20px;
+            line-height: 1.6;
+            color: #666;
+        }
+
+        .copyright {
+            font-size: 13px;
+            color: #444;
+        }
+
+        /* Responsive Footer */
+        @media (max-width: 768px) {
+            .footer-container {
+                grid-template-columns: 1fr;
+                gap: 30px;
+                text-align: center;
+            }
+            .footer-brand h4 {
+                justify-content: center;
+            }
+            .footer-links-col a:hover {
+                transform: none;
+            }
+        }
+
         :root {
             --gold: #ffbd59;
             --dark-gold: #b37d14;
@@ -308,23 +410,28 @@
             <li><a href="#tokenomics">Tokenomics</a></li>
             <li><a href="#roadmap">Roadmap</a></li>
         </ul>
-/*        <a href="https://pancakeswap.finance" target="_blank" class="btn-buy btn-buy-nav">Buy $LKING</a> */
+        <a href="buytoken.html" target="_blank" class="btn-buy btn-buy-nav">Buy $LKING</a>
     </nav>
 
     <!-- Hero Section -->
     <header class="hero">
         <div class="hero-badge">THE KING OF THE CRYPTO JUNGLE</div>
         <h1>LION KING</h1>
-        <p>Soon we will start presale $LKING.</p>
+        <p>Soon we will start PRESALE $LKING.</p>
         
-        <!-- Contract Address Box -->
-        <div class="ca-container">
-            <span class="ca-text" id="caToken">0x15414caF78e82Ce6DCBb46a32b1CE0FE56A3FF01</span>
-            <button class="btn-copy" onclick="copyCA()">Copy CA</button>
+       <!-- Contract Address Container -->
+        <div style="text-align: center; margin-bottom: 30px; width: 100%; max-width: 550px;">
+            <div style="font-size: 12px; color: var(--gold); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; font-weight: bold;">
+                🔸 BSC (BEP-20) Contract Address 🔸
+            </div>
+            <div class="ca-container" style="margin-bottom: 0;">
+                <span class="ca-text" id="ca-value">0x15414caF78e82Ce6DCBb46a32b1CE0FE56A3FF01</span>
+                <button class="btn-copy" id="btn-copy">Copy CA</button>
+            </div>
         </div>
 
         <div style="display: flex; gap: 20px;">
-/*            <a href="https://raydium.io" target="_blank" class="btn-buy" style="padding: 15px 40px; font-size: 18px;">Buy Now</a> */
+            <a href="buytoken.html" target="_blank" class="btn-buy" style="padding: 15px 40px; font-size: 18px;">Buy Now</a>
             <a href="https://x.com/LKING_Coin" target="_blank" class="btn-buy" style="padding: 15px 40px; font-size: 18px; background: transparent; border: 2px solid var(--gold); color: var(--gold);">Join Twitter / X</a>
         </div>
     </header>
@@ -345,8 +452,8 @@
                 <h3>Total Supply</h3>
                 <p>1,000,000,000,000</p>
             </div>
-            <div class="token-card">
-
+            <div class="token-card"></div>
+    </section>            
     <!-- Beautiful New Roadmap Section -->
     <section id="roadmap" class="section">
         <h2 class="section-title">Jungle Roadmap</h2>
@@ -426,3 +533,71 @@
         </div>
     </section>
 
+        <!-- Script for Copying CA -->
+    <script>
+        const btnCopy = document.getElementById('btn-copy');
+        const caValue = document.getElementById('ca-value').innerText;
+
+        btnCopy.addEventListener('click', () => {
+            navigator.clipboard.writeText(caValue).then(() => {
+                btnCopy.innerText = 'Copied! ✅';
+                btnCopy.style.background = 'var(--gold)';
+                btnCopy.style.color = '#000';
+                btnCopy.style.borderColor = 'var(--gold)';
+                
+                setTimeout(() => {
+                    btnCopy.innerText = 'Copy CA';
+                    btnCopy.style.background = 'transparent';
+                    btnCopy.style.color = 'var(--text-light)';
+                    btnCopy.style.borderColor = 'var(--text-gray)';
+                }, 2000);
+            }).catch(err => {
+                console.error('Failed to copy text: ', err);
+                alert('Copy failed, please copy manually.');
+            });
+        });
+    </script>
+
+</body>
+        <!-- Advanced Footer Section -->
+    <footer>
+        <div class="footer-container">
+            <!-- Brand Column -->
+            <div class="footer-brand">
+                <h4>
+                    <img src="Logo200x200png.png" alt="LKING Logo" style="height: 30px; width: auto; object-fit: contain;">
+                    <span>Lion King</span>
+                </h4>
+                <p>The supreme ruler of the BNB Smart Chain meme ecosystem. Built by the community, powered by memes, and destined for the throne.</p>
+            </div>
+
+            <!-- Socials Column -->
+            <div class="footer-links-col">
+                <h4>Community</h4>
+                <ul>
+                    <li><a href="https://x.com/LKING_Coin" target="_blank">Twitter / X</a></li>
+                    <li><a href="https://telegram.org" target="_blank">Telegram</a></li>
+                    <li><a href="https://discord.com" target="_blank">Discord</a></li>
+                </ul>
+            </div>
+
+            <!-- Trackers Column -->
+            <div class="footer-links-col">
+                <h4>Trackers & Trade</h4>
+                <ul>
+                    <li><a href="https://pancakeswap.finance" target="_blank">PancakeSwap</a></li>
+                    <li><a href="https://dexscreener.com" target="_blank">DEXScreener</a></li>
+                    <li><a href="https://bscscan.com" target="_blank">BscScan Explorer</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Bottom Copyright & Disclaimer -->
+        <div class="footer-bottom">
+            <p class="disclaimer">
+                <strong>Disclaimer:</strong> $LKING is a meme coin created for entertainment purposes only. It has no intrinsic value, no formal team, and no financial roadmap. Cryptocurrency investments are highly volatile and risky. Never invest money you cannot afford to lose.
+            </p>
+            <p class="copyright">&copy; 2026 Lion King Token ($LKING). All rights reserved.</p>
+        </div>
+    </footer>
+</html>
