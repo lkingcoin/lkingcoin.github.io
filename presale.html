@@ -320,4 +320,118 @@
         const statusText = document.getElementById('status-text');
 
        // Инициализация прогресс-бара
-        function updateProgressBar() {const percentage = Math.min((currentRaisedUsd / HARD_CAP_USD) * 100, 100);document.getElementById('raised-text').innerText = Raised: $${currentRaisedUsd.toLocaleString()};document.getElementById('target-text').innerText = Hard Cap: $${HARD_CAP_USD.toLocaleString()};document.getElementById('progress-percent').innerText = ${percentage.toFixed(1)}%;// Запуск плавной анимации полосы с задержкой, чтобы пользователь увидел эффектsetTimeout(() => {document.getElementById('progress-fill').style.width = ${percentage}%;}, 300);}updateProgressBar();// Получаем актуальный курс BNB к USDasync function fetchBnbPrice() {try {const response = await fetch('coingecko.com');const data = await response.json();bnbPriceUsd = data.binancecoin.usd;} catch (err) {console.log("Could not fetch BNB price, using default", err);}}fetchBnbPrice();// Подключение кошелькаasync function connectWallet() {if (!window.ethereum) {updateStatus("Please install MetaMask or Trust Wallet!", "red");return;}try {provider = new ethers.BrowserProvider(window.ethereum);const network = await provider.getNetwork();if (Number(network.chainId) !== 56) {try {await window.ethereum.request({method: 'wallet_switchEthereumChain',params: [{ chainId: '0x38' }],});} catch (switchError) {updateStatus("Please switch your wallet to BSC Mainnet!", "red");return;}}await provider.send("eth_requestAccounts", []);signer = await provider.getSigner();userAddress = await signer.getAddress();connectBtn.innerText = userAddress.substring(0, 6) + "..." + userAddress.substring(38);buyBtn.disabled = false;buyBtn.innerText = "Buy $LKING Now";updateStatus("Wallet connected successfully!", "green");} catch (err) {console.error(err);updateStatus("Connection failed.", "red");}}// Расчет количества получаемых монетfunction calculateTokens() {const amount = parseFloat(amountInput.value) || 0;const currency = currencySelect.value;let totalValueInUsd = 0;if (currency === "BNB") {totalValueInUsd = amount * bnbPriceUsd;} else {totalValueInUsd = amount;}const tokensToReceive = totalValueInUsd / TOKEN_PRICE_USD;tokensOutput.innerText = tokensToReceive.toLocaleString(undefined, {maximumFractionDigits: 2}) + " $LKING";}// Логика транзакции покупкиasync function handlePurchase() {const amount = amountInput.value;if (!amount || amount <= 0) {updateStatus("Please enter a valid amount.", "red");return;}const currency = currencySelect.value;buyBtn.disabled = true;buyBtn.innerText = "Processing...";updateStatus("Please confirm the transaction in your wallet...", "orange");try {if (currency === "BNB") {const tx = await signer.sendTransaction({to: MY_WALLET_ADDRESS,value: ethers.parseEther(amount)});updateStatus("Transaction sent! Waiting for block confirmation...", "orange");await tx.wait();} else {const tokenAddress = TOKEN_ADDRESSES[currency];const tokenContract = new ethers.Contract(tokenAddress, ERC20_ABI, signer);const parsedAmount = ethers.parseUnits(amount, 18);const tx = await tokenContract.transfer(MY_WALLET_ADDRESS, parsedAmount);updateStatus("Transaction sent! Waiting for block confirmation...", "orange");await tx.wait();}updateStatus("Success! Your tokens will be airdropped soon. 🎉", "green");amountInput.value = "";calculateTokens();} catch (err) {console.error(err);updateStatus("Transaction failed or rejected.", "red");} finally {buyBtn.disabled = false;buyBtn.innerText = "Buy $LKING Now";}}function updateStatus(text, colorHex) {statusText.innerText = text;statusText.style.color = colorHex === "green" ? "#2ecc71" : colorHex === "red" ? "#e74c3c" : colorHex === "orange" ? "#f39c12" : "#a6a6a6";}connectBtn.addEventListener('click', connectWallet);buyBtn.addEventListener('click', handlePurchase);amountInput.addEventListener('input', calculateTokens);currencySelect.addEventListener('change', calculateTokens);
+        function updateProgressBar() {const percentage = Math.min((currentRaisedUsd / HARD_CAP_USD) * 100, 100);
+                                      document.getElementById('raised-text').innerText = Raised: $${currentRaisedUsd.toLocaleString()};
+                                      document.getElementById('target-text').innerText = Hard Cap: $${HARD_CAP_USD.toLocaleString()};
+                                      document.getElementById('progress-percent').innerText = ${percentage.toFixed(1)}%;
+       // Запуск плавной анимации полосы с задержкой, чтобы пользователь увидел эффект
+                                      setTimeout(() => {
+                                          document.getElementById('progress-fill').style.width = ${percentage}%;
+                                      }, 300);
+                                     }
+        updateProgressBar();
+        // Получаем актуальный курс BNB к USD
+        async function fetchBnbPrice() {
+            try {
+                const response = await fetch('coingecko.com');
+                const data = await response.json();
+                bnbPriceUsd = data.binancecoin.usd;
+            } catch (err) {
+                console.log("Could not fetch BNB price, using default", err);
+            }
+        }
+        fetchBnbPrice();
+        // Подключение кошелька
+        async function connectWallet() {
+            if (!window.ethereum) {
+                updateStatus("Please install MetaMask or Trust Wallet!", "red");
+                return;
+            }
+            try {provider = new ethers.BrowserProvider(window.ethereum);
+                 const network = await provider.getNetwork();
+                 if (Number(network.chainId) !== 56) {
+                     try {
+                         await window.ethereum.request({
+                             method: 'wallet_switchEthereumChain',params: [{
+                                 chainId: '0x38' 
+                             }],
+                         });
+                     } 
+                     catch (switchError) {
+                         updateStatus("Please switch your wallet to BSC Mainnet!", "red");
+                         return;
+                     }
+                 }
+                 await provider.send("eth_requestAccounts", []);
+                 signer = await provider.getSigner();
+                 userAddress = await signer.getAddress();
+                 connectBtn.innerText = userAddress.substring(0, 6) + "..." + userAddress.substring(38);
+                 buyBtn.disabled = false;buyBtn.innerText = "Buy $LKING Now";
+                 updateStatus("Wallet connected successfully!", "green");
+                } 
+            catch (err) {
+                console.error(err);
+                updateStatus("Connection failed.", "red");
+            }
+        }
+        
+        // Расчет количества получаемых монет
+        function calculateTokens() {
+            const amount = parseFloat(amountInput.value) || 0;
+            const currency = currencySelect.value;
+            let totalValueInUsd = 0;
+            if (currency === "BNB") {
+                totalValueInUsd = amount * bnbPriceUsd;
+            } 
+            else {
+                totalValueInUsd = amount;
+            }
+            const tokensToReceive = totalValueInUsd / TOKEN_PRICE_USD;
+            tokensOutput.innerText = tokensToReceive.toLocaleString(undefined, {maximumFractionDigits: 2}) + " $LKING";
+        }
+        
+        // Логика транзакции покупки
+        async function handlePurchase() {
+            const amount = amountInput.value;
+            if (!amount || amount <= 0) {
+                updateStatus("Please enter a valid amount.", "red");
+                return;
+            }
+            const currency = currencySelect.value;
+            buyBtn.disabled = true;
+            buyBtn.innerText = "Processing...";
+            updateStatus("Please confirm the transaction in your wallet...", "orange");
+            try {
+                if (currency === "BNB") {
+                    const tx = await signer.sendTransaction({to: MY_WALLET_ADDRESS,value: ethers.parseEther(amount)});
+                    updateStatus("Transaction sent! Waiting for block confirmation...", "orange");
+                    await tx.wait();
+                } 
+                else {const tokenAddress = TOKEN_ADDRESSES[currency];
+                      const tokenContract = new ethers.Contract(tokenAddress, ERC20_ABI, signer);
+                      const parsedAmount = ethers.parseUnits(amount, 18);
+                      const tx = await tokenContract.transfer(MY_WALLET_ADDRESS, parsedAmount);
+                      updateStatus("Transaction sent! Waiting for block confirmation...", "orange");
+                      await tx.wait();
+                     }
+                updateStatus("Success! Your tokens will be airdropped soon. 🎉", "green");
+                amountInput.value = "";
+                calculateTokens();
+            } 
+            catch (err) {
+                console.error(err);
+                updateStatus("Transaction failed or rejected.", "red");
+            } 
+            finally {
+                buyBtn.disabled = false;buyBtn.innerText = "Buy $LKING Now";
+            }
+        }
+        function updateStatus(text, colorHex) {
+            statusText.innerText = text;
+            statusText.style.color = colorHex === "green" ? "#2ecc71" : colorHex === "red" ? "#e74c3c" : colorHex === "orange" ? "#f39c12" : "#a6a6a6";
+        }
+        connectBtn.addEventListener('click', connectWallet);
+        buyBtn.addEventListener('click', handlePurchase);
+        amountInput.addEventListener('input', calculateTokens);
+        currencySelect.addEventListener('change', calculateTokens);
+    
