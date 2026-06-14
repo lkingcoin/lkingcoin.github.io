@@ -1,9 +1,344 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>LION KING ($LKING)</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LION KING ($LKING) — The True King of Memecoins</title>
+    <style>
+        :root {
+            --gold: #ffbd59;
+            --dark-gold: #b37d14;
+            --bg-dark: #0d0d0d;
+            --card-bg: #1a1a1a;
+            --text-light: #ffffff;
+            --text-gray: #a6a6a6;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-light);
+            overflow-x: hidden;
+        }
+
+        /* Navigation */
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 5%;
+            background: rgba(13, 13, 13, 0.8);
+            backdrop-filter: blur(10px);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 1px solid rgba(255, 189, 89, 0.1);
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--gold);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 30px;
+        }
+
+        .nav-links a {
+            color: var(--text-light);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: var(--gold);
+        }
+
+        .btn-buy {
+            background: linear-gradient(45deg, var(--gold), var(--dark-gold));
+            color: #000;
+            padding: 10px 25px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .btn-buy:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 189, 89, 0.4);
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 0 20px;
+            background: radial-gradient(circle at center, #261c08 0%, var(--bg-dark) 70%);
+            margin-top: 60px;
+        }
+
+        .hero-badge {
+            background: rgba(255, 189, 89, 0.1);
+            border: 1px solid var(--gold);
+            color: var(--gold);
+            padding: 8px 20px;
+            border-radius: 30px;
+            font-size: 14px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            letter-spacing: 1px;
+        }
+
+        .hero h1 {
+            font-size: 64px;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 20px;
+            background: linear-gradient(to right, #fff, var(--gold));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero p {
+            font-size: 20px;
+            color: var(--text-gray);
+            max-width: 600px;
+            margin-bottom: 40px;
+            line-height: 1.6;
+        }
+
+        /* CA Container */
+        .ca-container {
+            background: var(--card-bg);
+            border: 1px solid rgba(255, 189, 89, 0.2);
+            padding: 15px 25px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            max-width: 550px;
+            width: 100%;
+            justify-content: space-between;
+            margin-bottom: 30px;
+        }
+
+        .ca-text {
+            font-family: monospace;
+            color: var(--gold);
+            font-size: 14px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .btn-copy {
+            background: transparent;
+            border: 1px solid var(--text-gray);
+            color: var(--text-light);
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-copy:hover {
+            background: var(--gold);
+            color: #000;
+            border-color: var(--gold);
+        }
+
+        /* About Section */
+        .section {
+            padding: 100px 10%;
+            text-align: center;
+        }
+
+        .section-title {
+            font-size: 40px;
+            text-transform: uppercase;
+            margin-bottom: 50px;
+            position: relative;
+        }
+
+        .section-title::after {
+            content: '';
+            display: block;
+            width: 60px;
+            height: 4px;
+            background: var(--gold);
+            margin: 15px auto 0;
+            border-radius: 2px;
+        }
+
+        .about-text {
+            font-size: 18px;
+            color: var(--text-gray);
+            max-width: 800px;
+            margin: 0 auto;
+            line-height: 1.8;
+        }
+
+        /* Tokenomics Grid */
+        .tokenomics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+
+        .token-card {
+            background: var(--card-bg);
+            padding: 40px 30px;
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: transform 0.3s, border-color 0.3s;
+        }
+
+        .token-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(255, 189, 89, 0.3);
+        }
+
+        .token-card h3 {
+            font-size: 18px;
+            color: var(--text-gray);
+            text-transform: uppercase;
+            margin-bottom: 10px;
+        }
+
+        .token-card p {
+            font-size: 32px;
+            font-weight: bold;
+            color: var(--gold);
+        }
+
+        /* Roadmap Timeline */
+        .roadmap-list {
+            max-width: 700px;
+            margin: 0 auto;
+            text-align: left;
+        }
+
+        .roadmap-step {
+            background: var(--card-bg);
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border-left: 5px solid var(--gold);
+        }
+
+        .roadmap-step h3 {
+            color: var(--gold);
+            margin-bottom: 10px;
+            font-size: 20px;
+        }
+
+        .roadmap-step ul {
+            list-style-position: inside;
+            color: var(--text-gray);
+            line-height: 1.6;
+        }
+
+        /* Footer */
+        footer {
+            background: #050505;
+            padding: 40px 5%;
+            text-align: center;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            color: var(--text-gray);
+            font-size: 14px;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .footer-links a {
+            color: var(--text-light);
+            text-decoration: none;
+        }
+
+        .footer-links a:hover {
+            color: var(--gold);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .nav-links, .btn-buy-nav { display: none; }
+            .hero h1 { font-size: 40px; }
+            .hero p { font-size: 16px; }
+            .section { padding: 60px 5%; }
+        }
+    </style>
 </head>
 <body>
-    <h1>The True King of the Crypto Jugle!</h1>
-</body>
-</html>
+
+    <!-- Navigation -->
+    <nav>
+        <div class="logo">🦁 Lion King</div>
+        <ul class="nav-links">
+            <li><a href="#about">About</a></li>
+            <li><a href="#tokenomics">Tokenomics</a></li>
+            <li><a href="#roadmap">Roadmap</a></li>
+        </ul>
+        <a href="https://raydium.io" target="_blank" class="btn-buy btn-buy-nav">Buy $LKING</a>
+    </nav>
+
+    <!-- Hero Section -->
+    <header class="hero">
+        <div class="hero-badge">THE KING OF THE CRYPTO JUNGLE</div>
+        <h1>LION KING</h1>
+        <p>Forget the dogs, frogs, and cats. The true ruler of the meme savannah has arrived. Welcome to the kingdom of $LKING.</p>
+        
+        <!-- Contract Address Box -->
+        <div class="ca-container">
+            <span class="ca-text" id="caToken">0x0000000000000000000000000000000000000000</span>
+            <button class="btn-copy" onclick="copyCA()">Copy CA</button>
+        </div>
+
+        <div style="display: flex; gap: 20px;">
+            <a href="https://raydium.io" target="_blank" class="btn-buy" style="padding: 15px 40px; font-size: 18px;">Buy Now</a>
+            <a href="https://t.me" target="_blank" class="btn-buy" style="padding: 15px 40px; font-size: 18px; background: transparent; border: 2px solid var(--gold); color: var(--gold);">Join Telegram</a>
+        </div>
+    </header>
+
+    <!-- About Section -->
+    <section class="section" id="about">
+        <h2 class="section-title">The Legend</h2>
+        <p class="about-text">
+            For too long, the crypto space has been ruled by weak memes. $LKING is here to restore the natural order. Built on absolute trust, zero taxes, and pure community power, the Lion King is reclaiming his throne. Everything the light touches is our chart.
+        </p>
+    </section>
+
+    <!-- Tokenomics Section -->
+    <section class="section" id="tokenomics" style="background-color: #111111;">
+        <h2 class="section-title">Tokenomics</h2>
+        <div class="tokenomics-grid">
+            <div class="token-card">
+                <h3>Total Supply</h3>
+                <p>1,000,000,000</p>
+            </div>
+            <div class="token-card">
