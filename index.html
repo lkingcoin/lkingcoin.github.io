@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LION KING ($LKING) — The True King of the Crypto Jungle!</title>
+    <title>LION KING ($LKING) — The True King of Memecoins on BSC</title>
     <style>
         :root {
             --gold: #ffbd59;
@@ -127,6 +127,17 @@
             line-height: 1.6;
         }
 
+        /* Network Badge inside CA Container */
+        .network-badge {
+            background: #f0b90b;
+            color: #000;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
         /* CA Container */
         .ca-container {
             background: var(--card-bg);
@@ -136,7 +147,7 @@
             display: flex;
             align-items: center;
             gap: 15px;
-            max-width: 550px;
+            max-width: 650px;
             width: 100%;
             justify-content: space-between;
             margin-bottom: 30px;
@@ -159,6 +170,7 @@
             border-radius: 6px;
             cursor: pointer;
             transition: all 0.3s;
+            white-space: nowrap;
         }
 
         .btn-copy:hover {
@@ -167,7 +179,7 @@
             border-color: var(--gold);
         }
 
-        /* About Section */
+        /* Section Common */
         .section {
             padding: 100px 10%;
             text-align: center;
@@ -291,6 +303,7 @@
             .hero h1 { font-size: 40px; }
             .hero p { font-size: 16px; }
             .section { padding: 60px 5%; }
+            .ca-container { flex-direction: column; gap: 10px; text-align: center; }
         }
     </style>
 </head>
@@ -304,7 +317,7 @@
             <li><a href="#tokenomics">Tokenomics</a></li>
             <li><a href="#roadmap">Roadmap</a></li>
         </ul>
-        <a href="https://raydium.io" target="_blank" class="btn-buy btn-buy-nav">Buy $LKING</a>
+        <a href="https://pancakeswap.finance" target="_blank" class="btn-buy btn-buy-nav">Buy $LKING</a>
     </nav>
 
     <!-- Hero Section -->
@@ -315,30 +328,17 @@
         
         <!-- Contract Address Box -->
         <div class="ca-container">
-            <span class="ca-text" id="caToken">0x0000000000000000000000000000000000000000</span>
+            <span class="network-badge">BSC NETWORK</span>
+            <span class="ca-text" id="caToken">0x15414caF78e82Ce6DCBb46a32b1CE0FE56A3FF01</span>
             <button class="btn-copy" onclick="copyCA()">Copy CA</button>
         </div>
 
-        <div style="display: flex; gap: 20px;">
-            <a href="https://raydium.io" target="_blank" class="btn-buy" style="padding: 15px 40px; font-size: 18px;">Buy Now</a>
-            <a href="https://t.me" target="_blank" class="btn-buy" style="padding: 15px 40px; font-size: 18px; background: transparent; border: 2px solid var(--gold); color: var(--gold);">Join Telegram</a>
+        <div style="display: flex; gap: 20px; flex-wrap: wrap; justify-content: center;">
+            <a href="https://pancakeswap.finance" target="_blank" class="btn-buy" style="padding: 15px 40px; font-size: 18px;">Buy on PancakeSwap</a>
+            <a href="https://x.com" target="_blank" class="btn-buy" style="padding: 15px 40px; font-size: 18px; background: transparent; border: 2px solid var(--gold); color: var(--gold);">Join Twitter / X</a>
         </div>
     </header>
 
     <!-- About Section -->
     <section class="section" id="about">
         <h2 class="section-title">The Legend</h2>
-        <p class="about-text">
-            For too long, the crypto space has been ruled by weak memes. $LKING is here to restore the natural order. Built on absolute trust, zero taxes, and pure community power, the Lion King is reclaiming his throne. Everything the light touches is our chart.
-        </p>
-    </section>
-
-    <!-- Tokenomics Section -->
-    <section class="section" id="tokenomics" style="background-color: #111111;">
-        <h2 class="section-title">Tokenomics</h2>
-        <div class="tokenomics-grid">
-            <div class="token-card">
-                <h3>Total Supply</h3>
-                <p>1,000,000,000</p>
-            </div>
-            <div class="token-card">
