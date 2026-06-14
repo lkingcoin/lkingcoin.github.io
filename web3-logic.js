@@ -1,9 +1,9 @@
 // --- НАСТРОЙКИ ПРОЕКТА (Укажите ваши реальные данные) ---
-const MY_WALLET_ADDRESS = "0x0000000000000000000000000000000000000000"; // Кошелек для приема средств пресейла
-const LKING_TOKEN_ADDRESS = "0x0000000000000000000000000000000000000000"; // Адрес смарт-контракта $LKING
-const TOKEN_PRICE_USD = 0.01; // Стоимость токена в USD
+const MY_WALLET_ADDRESS = "0xe27BBB352B87299a0367dE5D2Fa6A8dD265c8312"; // Кошелек для приема средств пресейла
+const LKING_TOKEN_ADDRESS = "0x15414caF78e82Ce6DCBb46a32b1CE0FE56A3FF01"; // Адрес смарт-контракта $LKING
+const TOKEN_PRICE_USD = 0.003; // Стоимость токена в USD
 
-const HARD_CAP_USD = 50000;  
+const HARD_CAP_USD = 1000000;  
 let currentRaisedUsd = 16450; 
 
 const TOKEN_ADDRESSES = {
