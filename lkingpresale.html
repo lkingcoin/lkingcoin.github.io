@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" sizes="32x32" href="Logo200x200png.png">
+    <title>LION KING ($LKING) — Official Presale</title>
+    <!-- Подключаем внешние стили -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- Навигация -->
+    <nav>
+        <div class="logo">
+            <img src="Logo200x200png.png" alt="Logo" style="height: 35px; width: auto;">
+            <span>LKING PRESALE</span>
+        </div>
+        <button class="btn-connect" id="connect-btn">Connect Wallet</button>
+    </nav>
+
+    <!-- Форма пресейла -->
+    <div class="presale-container">
+        <div class="presale-card">
+            <span class="network-badge">BNB Smart Chain (BSC) Only</span>
+            <h1>Join the Presale</h1>
+            <p>Claim your allocation before the official PancakeSwap launch.</p>
+
+            <!-- Блок Прогресс-бара -->
+            <div class="progress-container">
+                <div class="progress-labels">
+                    <span id="raised-text">Raised: $0</span>
+                    <strong id="progress-percent">0%</strong>
+                </div>
+                <div class="progress-bar-bg">
+                    <div class="progress-bar-fill" id="progress-fill"></div>
+                </div>
+                <div class="progress-labels" style="margin-top: 6px; font-size: 11px;">
+                    <span>Soft Cap: $10,000</span>
+                    <span id="target-text">Hard Cap: $50,000</span>
+                </div>
+            </div>
+
+            <!-- Выбор валюты -->
+            <div class="input-group">
+                <label>Select Payment Method</label>
+                <select class="currency-select" id="currency-select">
+                    <option value="BNB">BNB (Native Coin)</option>
+                    <option value="USDT">USDT (Stablecoin)</option>
+                    <option value="USDC">USDC (Stablecoin)</option>
+                    <option value="FDUSD">FDUSD (Stablecoin)</option>
+                </select>
+            </div>
+
+            <!-- Ввод суммы -->
+            <div class="input-group">
+                <label>Amount to Spend</label>
+                <input type="number" class="amount-input" id="amount-input" placeholder="0.0" step="any" min="0">
+            </div>
+
+            <!-- Расчет получаемых токенов -->
+            <div class="result-box">
+                <span>You will get:</span>
+                <strong id="tokens-output">0.0 $LKING</strong>
+            </div>
+
+            <!-- Кнопки управления -->
+            <div style="display: flex; flex-direction: column; gap: 12px;">
+                <button class="btn-buy-now" id="buy-btn" disabled>Connect Wallet First</button>
+                <button class="btn-buy-now" id="claim-btn" disabled style="background: transparent; border: 2px solid var(--gold); color: var(--gold);">Claim / Receive $LKING</button>
+            </div>
+            
+            <div class="status-msg" id="status-text"></div>
+        </div>
+    </div>
+
+    <!-- Подключаем автономный скрипт логики Web3 -->
+    <script src="web3-logic.js"></script>
+</body>
+</html>
